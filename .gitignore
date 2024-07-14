@@ -1,0 +1,9 @@
+data/*
+another_works/*
+__pycache__/
+.venv/
+.vscode/
+catboost_info/
+raw_data/*
+agreement/*
+duplicates/*

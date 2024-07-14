@@ -1,0 +1,8 @@
+{
+    "Accuracy@1": 0.136,
+    "Accuracy@3": 0.217,
+    "Accuracy@5": 0.266,
+    "auto_error_rate": 0.864,
+    "manual_processing_rate": 0.0,
+    "general_error": 0.864
+}
