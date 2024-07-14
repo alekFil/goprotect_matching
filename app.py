@@ -40,12 +40,12 @@ if model_name:
         }
 
         st.write(
-            f"{metric_description["Accuracy@1"]} "
-            f"**{evaluations["Accuracy@1"] * 100:.2f}%**"
+            f"{metric_description['Accuracy@1']} "
+            f"**{evaluations['Accuracy@1'] * 100:.2f}%**"
         )
         st.write(
-            f"{metric_description["auto_error_rate"]} "
-            f"**{evaluations["auto_error_rate"] * 100:.2f}%**"
+            f"{metric_description['auto_error_rate']} "
+            f"**{evaluations['auto_error_rate'] * 100:.2f}%**"
         )
 
         # for metric, value in evaluations.items():
