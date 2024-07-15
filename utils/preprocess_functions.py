@@ -1,3 +1,4 @@
+import itertools
 import re
 
 import nltk
@@ -57,3 +58,117 @@ def replace_numbers_with_text(text):
 
     # Замена чисел на текст
     return pattern.sub(num_to_text, text)
+
+
+def abbr_preprocess_text(
+    name,
+    abbreviation_dict,
+    output_list=False,
+    unknown_answer=False,
+    remove_unknown_abbr=False,
+    remove_all_abbr=False,
+):
+    two_letter_prepositions = [
+        " в ",
+        " во ",
+        " до ",
+        " из ",
+        " на ",
+        " по ",
+        " о ",
+        " об ",
+        " обо ",
+        " у ",
+    ]
+
+    symbols = [" no", " NO", " No", "номер"]
+
+    # Удаляем служебные символы (перенос строки, табуляция и т.д.)
+    name = re.sub(r"[\n\t\r]", " ", name)
+
+    # Создаем регулярное выражение для предлогов
+    prepositions_pattern = (
+        r"\b(?:" + "".join(two_letter_prepositions) + "".join(symbols) + r")\b"
+    )
+
+    # Заменяем все предлоги на пробем (предварительное решение вместо трудоемкого удаления стоп-слов)
+    name = re.sub(prepositions_pattern, " ", name)
+
+    # Удаление пунктуации
+    name = re.sub(r"[^\w\s]", " ", name)
+
+    # Удаление отдельных букв
+    name = re.sub(r"\b[А-ЯЁа-яё]\b", " ", name)
+
+    # Удаление букв ё
+    name = re.sub(r"[Ёё]", "е", name)
+
+    unknown_abbr = []
+    # Находим аббревиатуры большими буквами и приводим их к нижнему регистру
+    # Надо уточнить поиск неизвестных.
+    # А если в конце аббревиатуры прописная буква?
+    uppercase_abbreviations = re.findall(r"\b[А-ЯЁ]+[а-яё]*+[А-ЯЁ]+\b", name)
+    for abbr in uppercase_abbreviations:
+        abbr = abbr.lower()
+        if abbr not in abbreviation_dict:
+            unknown_abbr.append(abbr.upper())
+            if remove_unknown_abbr:
+                name = re.sub(r"\b" + re.escape(abbr.upper()) + r"\b", " ", name)
+
+    # Удаление лишних пробелов
+    name = re.sub(r"\s+", " ", name)
+
+    # Удаление пробелов в начале и в конце
+    name = name.strip()
+
+    possible_replacements = []
+    parts = name.lower().split()
+
+    for part in parts:
+        if part in abbreviation_dict:
+            if not remove_all_abbr:
+                replacements = abbreviation_dict[part]
+                if isinstance(replacements, str):
+                    replacements = [replacements]
+                elif not output_list:
+                    replacements = [""]
+                possible_replacements.append(replacements)
+            else:
+                pass
+        else:
+            possible_replacements.append([part])
+
+    # Генерируем все возможные комбинации
+    all_combinations = list(itertools.product(*possible_replacements))
+
+    # Формируем итоговые наименования
+    final_phrases = [" ".join(combination).strip() for combination in all_combinations]
+
+    if not output_list:
+        final_phrases = final_phrases[0]
+
+    if unknown_answer:
+        return list(set(unknown_abbr))
+
+    return final_phrases
+
+
+def process_region(text, region_list, return_region=False):
+    """
+    Функция находит в тексте регион из списка регионов, удаляет его и возвращает
+    либо новый текст без региона, либо регион в зависимости от флага return_region.
+
+    :param text: исходный текст
+    :param region_list: список регионов для поиска
+    :param return_region: если True, возвращает найденный регион, иначе возвращает текст без региона
+    :return: либо новый текст без региона, либо найденный регион
+    """
+    for region in region_list:
+        # Используем регулярное выражение для точного поиска региона
+        pattern = re.compile(r"\b" + re.escape(region) + r"\b", re.IGNORECASE)
+        match = pattern.search(text)
+        if match:
+            found_region = match.group(0)
+            new_text = pattern.sub("", text).strip()
+            return found_region if return_region else new_text
+    return None if return_region else text
