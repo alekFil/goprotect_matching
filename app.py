@@ -9,9 +9,9 @@ from utils.plot_functions import plot_metrics
 
 # Загружаем необходимые ресурсы
 
-nltk.download("punkt")
+nltk.download("punkt", quiet=True)
 
-nltk.download("stopwords")
+nltk.download("stopwords", quiet=True)
 
 # Настройка страницы
 st.set_page_config(layout="wide")
