@@ -1,10 +1,17 @@
 import importlib
 
+import nltk
 import streamlit as st
 
 from utils.load_functions import load_evaluations, load_plots
 from utils.model_info import model_full_descriptions, model_name_map, model_options
 from utils.plot_functions import plot_metrics
+
+# Загружаем необходимые ресурсы
+
+nltk.download("punkt")
+
+nltk.download("stopwords")
 
 # Настройка страницы
 st.set_page_config(layout="wide")
