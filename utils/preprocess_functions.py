@@ -2,6 +2,8 @@ import itertools
 import re
 
 import nltk
+import pymorphy3
+from nltk.tokenize import word_tokenize
 from num2words import num2words
 
 # Загружаем необходимые ресурсы
@@ -9,6 +11,9 @@ from num2words import num2words
 nltk.download("punkt")
 
 nltk.download("stopwords")
+
+# Инициализация морфологического анализатора для русского языка
+morph = pymorphy3.MorphAnalyzer()
 
 
 def simple_preprocess_text(text):
@@ -191,3 +196,25 @@ def process_cities(text, region_list, return_city=False):
                 new_text = pattern.sub("", text).strip()
                 return found_city if return_city else new_text
     return None if return_city else text
+
+
+def lemmatize_text(text, stop_words_list):
+    # Токенизация
+    words = word_tokenize(text.lower(), language="russian")
+
+    # Лемматизация
+    lemmatized_words = [morph.parse(word)[0].normal_form for word in words]
+
+    # Удаление стоп-слов
+    # stop_words = set(stopwords.words("russian"))
+    filtered_words = [word for word in lemmatized_words if word not in stop_words_list]
+
+    return " ".join(filtered_words)
+
+
+def remove_short_words(text):
+    words = text.split()  # разбиваем текст на слова
+    filtered_words = [
+        word for word in words if len(word) > 2
+    ]  # фильтруем слова длиннее двух символов
+    return " ".join(filtered_words)  # объединяем отфильтрованные слова в строку
