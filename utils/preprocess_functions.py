@@ -10,8 +10,6 @@ from num2words import num2words
 
 nltk.download("punkt", quiet=True)
 
-nltk.download("stopwords", quiet=True)
-
 # Инициализация морфологического анализатора для русского языка
 morph = pymorphy3.MorphAnalyzer()
 
@@ -206,7 +204,6 @@ def lemmatize_text(text, stop_words_list):
     lemmatized_words = [morph.parse(word)[0].normal_form for word in words]
 
     # Удаление стоп-слов
-    # stop_words = set(stopwords.words("russian"))
     filtered_words = [word for word in lemmatized_words if word not in stop_words_list]
 
     return " ".join(filtered_words)
