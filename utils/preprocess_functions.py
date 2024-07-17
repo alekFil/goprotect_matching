@@ -8,9 +8,9 @@ from num2words import num2words
 
 # Загружаем необходимые ресурсы
 
-nltk.download("punkt")
+nltk.download("punkt", quiet=True)
 
-nltk.download("stopwords")
+nltk.download("stopwords", quiet=True)
 
 # Инициализация морфологического анализатора для русского языка
 morph = pymorphy3.MorphAnalyzer()
