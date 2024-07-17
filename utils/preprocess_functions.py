@@ -91,7 +91,7 @@ def abbr_preprocess_text(
         r"\b(?:" + "".join(two_letter_prepositions) + "".join(symbols) + r")\b"
     )
 
-    # Заменяем все предлоги на пробем (предварительное решение вместо трудоемкого удаления стоп-слов)
+    # Заменяем все предлоги на пробел (предварительное решение вместо трудоемкого удаления стоп-слов)
     name = re.sub(prepositions_pattern, " ", name)
 
     # Удаление пунктуации
@@ -172,3 +172,22 @@ def process_region(text, region_list, return_region=False):
             new_text = pattern.sub("", text).strip()
             return found_region if return_region else new_text
     return None if return_region else text
+
+
+def remove_substrings(input_string, substrings):
+    for substring in substrings:
+        input_string = input_string.replace(substring, "").strip()
+    return input_string
+
+
+def process_cities(text, region_list, return_city=False):
+    for cities_list in region_list.values():
+        for city in cities_list:
+            # Используем регулярное выражение для точного поиска региона
+            pattern = re.compile(r"\b" + re.escape(city) + r"[а-я]*\b", re.IGNORECASE)
+            match = pattern.search(text)
+            if match:
+                found_city = match.group(0)
+                new_text = pattern.sub("", text).strip()
+                return found_city if return_city else new_text
+    return None if return_city else text

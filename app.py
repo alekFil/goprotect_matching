@@ -34,6 +34,7 @@ if model_name:
             "Accuracy@1": "Доля правильно распознаваемых объектов:",
             "Accuracy@3": "Доля объектов, правильно распознаваемых в топ 3:",
             "Accuracy@5": "Доля объектов, правильно распознаваемых в топ 5:",
+            "Accuracy@10": "Доля объектов, правильно распознаваемых в топ 10:",
             "auto_error_rate": "Ошибка автоматического распознавания:",
             "manual_processing_rate": "Доля объектов, направляемых на ручное распознавание:",
             "general_error": "Итоговая ошибка (после автоматического и ручного распознавания):",
@@ -42,6 +43,10 @@ if model_name:
         st.write(
             f"{metric_description['Accuracy@1']} "
             f"**{evaluations['Accuracy@1'] * 100:.2f}%**"
+        )
+        st.write(
+            f"{metric_description['Accuracy@3']} "
+            f"**{evaluations['Accuracy@3'] * 100:.2f}%**"
         )
         st.write(
             f"{metric_description['auto_error_rate']} "
@@ -69,13 +74,14 @@ if model_name:
                 prediction = inference_module.predict([school_name])
                 st.subheader("Найденная школа (наиболее вероятное совпадение)")
                 st.write(prediction[0])
+                st.write(prediction[1])
                 # Отображение списка кортежей в свернутом виде
                 if prediction[1]:
                     with st.expander(
-                        "Нажимите, чтобы показать "
+                        "Нажмите, чтобы показать "
                         "топ-5 результатов (id и вероятность совпадения)"
                     ):
-                        for item in prediction[1][0]:
+                        for item in prediction[2][0]:
                             st.write(item)
             else:
                 st.write("Пожалуйста, введите название школы")

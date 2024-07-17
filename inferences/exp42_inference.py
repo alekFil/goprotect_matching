@@ -15,11 +15,12 @@ from utils.load_functions import load_resources
 from utils.preprocess_functions import (
     abbr_preprocess_text,
     process_region,
+    remove_substrings,
     replace_numbers_with_text,
     simple_preprocess_text,
 )
 
-model_name = "exp39"
+model_name = "exp42"
 
 VECTORIZER = load_resources(model_name, "vectorizer", "joblib")
 REFERENCE_VEC = load_resources(model_name, "reference_vec", "joblib")
@@ -28,6 +29,7 @@ REFERENCE_REGION = load_resources(model_name, "reference_region", "joblib")
 REFERENCE_NAME = load_resources(model_name, "reference_name", "joblib")
 ABBR_DICT = load_resources("general", "abbreviations_dict", "joblib")
 REGION_DICT = load_resources("general", "region_dict", "joblib")
+BLACKLIST_OPF = load_resources("general", "blacklist_opf", "joblib")
 
 
 def calculate_similarity(x, y, method="cosine"):
@@ -122,6 +124,7 @@ def predict(data):
         x = replace_numbers_with_text(x)
         x = abbr_preprocess_text(x, ABBR_DICT, False, False, True, False)
         x = process_region(x, REGION_DICT)
+        x = remove_substrings(x, BLACKLIST_OPF)
         return x
 
     def region(x):

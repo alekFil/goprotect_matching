@@ -7,3 +7,5 @@ catboost_info/
 raw_data/*
 agreement/*
 duplicates/*
+.env
+notebooks/matches.csv

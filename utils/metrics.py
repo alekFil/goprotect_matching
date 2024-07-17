@@ -20,11 +20,12 @@ def check_top_1(true_values, predictions):
     return result
 
 
-def calculate_metrics(true_values, predictions, manual_review, cost=1):
+def calculate_metrics(true_values, predictions, manual_review):
     # Accuracy
     accuracy_top_1 = accuracy_top_k(true_values, predictions, 1)
     accuracy_top_3 = accuracy_top_k(true_values, predictions, 3)
     accuracy_top_5 = accuracy_top_k(true_values, predictions, 5)
+    accuracy_top_10 = accuracy_top_k(true_values, predictions, 10)
 
     # Бизнес-метрика: процент ошибок автоматической обработки
     auto_error_rate = 1 - accuracy_top_1
@@ -32,20 +33,13 @@ def calculate_metrics(true_values, predictions, manual_review, cost=1):
     # Бизнес-метрика: доля данных, отправленных на ручную обработку данных
     manual_processing_rate = len(manual_review) / len(predictions)
 
-    # manual_spend = len(manual_review) * cost
-
-    # correction_spend = (len(true_values) - len(manual_review)) * cost * 1.5
-
-    # general_error = (
-    #     (len(true_values) - len(manual_review)) * auto_error_rate / len(true_values)
-    # )
-
     general_error = (1 - manual_processing_rate) * auto_error_rate
 
     return {
         "Accuracy@1": round(accuracy_top_1, 3),
         "Accuracy@3": round(accuracy_top_3, 3),
         "Accuracy@5": round(accuracy_top_5, 3),
+        "Accuracy@10": round(accuracy_top_10, 3),
         "auto_error_rate": round(auto_error_rate, 3),
         "manual_processing_rate": round(manual_processing_rate, 3),
         "general_error": round(general_error, 3),
