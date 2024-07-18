@@ -110,11 +110,12 @@ def abbr_preprocess_text(
     # Находим аббревиатуры большими буквами и приводим их к нижнему регистру
     # Надо уточнить поиск неизвестных.
     # А если в конце аббревиатуры прописная буква?
-    uppercase_abbreviations = re.findall(r"\b[А-ЯЁ]+[а-яё]*+[А-ЯЁ]+\b", name)
+    uppercase_abbreviations = re.findall(r"\b[А-ЯЁа-яё]+[а-яё]*[А-ЯЁ]+\b", name)
     for abbr in uppercase_abbreviations:
         abbr = abbr.lower()
         if abbr not in abbreviation_dict:
             unknown_abbr.append(abbr.upper())
+            print(unknown_abbr)
             if remove_unknown_abbr:
                 name = re.sub(r"\b" + re.escape(abbr.upper()) + r"\b", " ", name)
 
